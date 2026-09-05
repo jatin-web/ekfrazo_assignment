@@ -43,22 +43,14 @@ class _DynamicFieldWidgetState extends State<DynamicFieldWidget> {
       case FieldFormat.textInput:
         return TextFormField(
           controller: _textController,
-          decoration: InputDecoration(
-            labelText: label,
-            errorText: widget.errorText,
-            border: const OutlineInputBorder(),
-          ),
+          decoration: InputDecoration(labelText: label, errorText: widget.errorText),
           onChanged: widget.onChanged,
         );
       case FieldFormat.dropdown:
         final value = widget.initialValue;
         return DropdownButtonFormField<String>(
           initialValue: (value == null || value.isEmpty) ? null : value,
-          decoration: InputDecoration(
-            labelText: label,
-            errorText: widget.errorText,
-            border: const OutlineInputBorder(),
-          ),
+          decoration: InputDecoration(labelText: label, errorText: widget.errorText),
           items: [
             for (final option in widget.config.enums)
               DropdownMenuItem(value: option.code, child: Text(option.name)),

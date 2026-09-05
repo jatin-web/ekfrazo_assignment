@@ -36,6 +36,24 @@ lib/
         └── utils/         ValidationEngine, TemplateResolver
 ```
 
+#### Why split this way
+- `domain/repositories` defines a contract (`FormRepository`) that `data`
+  implements and `presentation` depends on — neither side depends on the
+  other directly, so the local-JSON datasource could become an API-backed
+  one without touching the bloc, and tests can mock the interface instead
+  of hitting real JSON.
+- `domain/entities` are plain Dart classes with no JSON awareness — they're
+  what the rest of the app reasons about (e.g. `FlowConfig.screenByName`),
+  so business rules live here, not scattered through the UI.
+- `data/models`' `fromJson` methods own the JSON boundary: each one parses
+  the raw map and returns the matching entity; once built, nothing
+  downstream knows JSON was ever involved.
+- `data/datasources` (`FormLocalDataSource`) is the only place that touches
+  `lib/db/flow_config_json.dart` — swapping to a remote source means
+  changing just this one class.
+- `data/repositories` (`FormRepositoryImpl`) wires a datasource to the
+  domain contract: fetch raw JSON, hand it to the model, return the entity.
+
 #### Config → typed entities
 Each model's `fromJson` reads one discriminator key (`screenType` / `format`
 / `actionType`) and returns the matching sealed subclass (e.g.

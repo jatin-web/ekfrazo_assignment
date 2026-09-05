@@ -48,7 +48,10 @@ class TemplateNodeWidget extends StatelessWidget {
             for (final entry in data)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(TemplateResolver.resolve(entry.value, formData)),
+                child: Text(
+                  TemplateResolver.resolve(entry.value, formData),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
           ],
         );
@@ -57,35 +60,43 @@ class TemplateNodeWidget extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            for (final entry in data)
+            for (final (index, entry) in data.indexed) ...[
+              if (index > 0) const Divider(height: 1),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       entry.key,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Flexible(
                       child: Text(
                         TemplateResolver.resolve(entry.value, formData),
                         textAlign: TextAlign.right,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   ],
                 ),
               ),
+            ],
           ],
         );
 
       case ButtonComponent(:final label, :final onAction):
-        return SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () => onButtonAction(onAction),
-            child: Text(label),
+        return Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => onButtonAction(onAction),
+              child: Text(label),
+            ),
           ),
         );
     }

@@ -162,9 +162,20 @@ class FlowBloc extends Bloc<FlowEvent, FlowState> {
             toastId: nextState.toastId + 1,
           );
         case NavigationAction():
+          // If the target is already on the history stack (e.g. a
+          // "BACK TO FORM" style button returning to a screen the user
+          // passed through earlier), pop back to it instead of pushing a
+          // duplicate entry — otherwise the screen's own back button would
+          // just bounce forward again to where we came from.
+          final existingIndex = nextState.history.indexOf(
+            action.targetFlowName,
+          );
+          final newHistory = existingIndex != -1
+              ? nextState.history.sublist(0, existingIndex)
+              : [...nextState.history, nextState.currentScreenName!];
           nextState = nextState.copyWith(
             currentScreenName: action.targetFlowName,
-            history: [...nextState.history, nextState.currentScreenName!],
+            history: newHistory,
             currentPageIndex: 0,
             fieldErrors: const {},
           );

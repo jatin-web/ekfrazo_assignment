@@ -22,6 +22,7 @@ class FormScreenView extends StatelessWidget {
         final pages = screen.orderedPages;
         final page = pages[state.currentPageIndex];
         final canGoBack = state.currentPageIndex > 0 || state.canGoBackScreen;
+        final hasMultiplePages = pages.length > 1;
 
         return Scaffold(
           appBar: AppBar(
@@ -45,14 +46,27 @@ class FormScreenView extends StatelessWidget {
                 children: [
                   Text(
                     page.label,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Page ${state.currentPageIndex + 1} of ${pages.length}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  const SizedBox(height: 24),
+                  if (hasMultiplePages) ...[
+                    const SizedBox(height: 12),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: (state.currentPageIndex + 1) / pages.length,
+                        minHeight: 6,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Page ${state.currentPageIndex + 1} of ${pages.length}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                  const SizedBox(height: 20),
                   Expanded(
                     child: ListView(
                       children: [
@@ -80,6 +94,7 @@ class FormScreenView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

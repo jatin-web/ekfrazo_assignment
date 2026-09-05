@@ -15,6 +15,4 @@ class PageConfig {
     required this.actionLabel,
     required this.properties,
   });
-
-  bool get isSubmitPage => actionLabel.toUpperCase() == 'SUBMIT';
 }

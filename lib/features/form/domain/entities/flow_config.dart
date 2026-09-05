@@ -21,6 +21,4 @@ class FlowConfig {
       orElse: () => throw StateError('No flow named "$flowName" in config'),
     );
   }
-
-  ScreenConfig get initialScreen => screenByName(initialPage);
 }
